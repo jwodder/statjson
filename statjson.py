@@ -7,6 +7,13 @@ import os.path
 import pwd
 import stat
 import sys
+import time
+
+TIMESTAMP_FMT = '%a %b %e %H:%M:%S %Z %Y'  # Tue Nov  8 21:44:39 UTC 2016
+# same format as used by `date(1)`
+
+# ISO 8601 format; requires Python 3 (for %z):
+#TIMESTAMP_FMT = '%Y-%m-%dT%H:%M:%S%z'
 
 extra_fields = [
     # Linux:
@@ -64,6 +71,9 @@ def strmode(mode):  # cf. BSD's `strmode(3)`
             # ACLs -> '+'
             # none of the above: ' '
 
+def timestamp(secs):
+    return time.strftime(TIMESTAMP_FMT, time.localtime(secs))
+
 def main():
     stats = []
     ok = True
@@ -106,8 +116,11 @@ def main():
 
             about["size"] = st.st_size
             about["access_time"] = st.st_atime
+            about["access_timestamp"] = timestamp(st.st_atime)
             about["modify_time"] = st.st_mtime
+            about["modify_timestamp"] = timestamp(st.st_mtime)
             about["change_time"] = st.st_ctime
+            about["change_timestamp"] = timestamp(st.st_ctime)
             for attr, name in extra_fields:
                 try:
                     about[name] = getattr(st, attr)

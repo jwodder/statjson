@@ -1,10 +1,8 @@
 - Add an option for not following symlinks
+    - When lstat'ing a symlink, include a field for the target path
 - Add an option for just outputting the `stat` structure directly as a dict
-- Add an option for displaying timestamps in ISO8601 format
-- Add a "(file)type" field
-- Include unknown `stat` entries in output
+- Include unknown `stat` attributes in output
 - Include device name?
-- Include user & group name (or `None`)
 - Use `stat` module to deconstruct flags
 - Calling `st_ctime` "`change_time`" is inaccurate on Windows.  Change this?
     - Should I even bother with Windows support?
@@ -17,3 +15,7 @@
 - Use the `st_*` names for all fields?
 - Add an option for including a dict of broken-out boolean permission fields
   (`IXOTH`, `IRUSR`, etc.)
+- Add an "`ls` mode" for stat'ing all of the entries in a given directory?
+- Add an option for outputting a stream of dicts instead of an array?
+- Add an option for displaying timestamps in UTC?
+- Add an option for forcing timestamps to be in ISO8601 format?
