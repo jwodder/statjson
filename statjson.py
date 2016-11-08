@@ -1,25 +1,4 @@
 #!/usr/bin/python
-# TODO:
-# - Add an option for not following symlinks
-# - Add an option for just outputting the `stat` structure directly as a dict
-# - Add an option for displaying timestamps in ISO8601 format
-# - Add a "(file)type" field
-# - Include unknown `stat` entries in output
-# - Include device name?
-# - Include user & group name (or `None`)
-# - Use `stat` module to deconstruct flags
-# - Calling `st_ctime` "change_time" is inaccurate on Windows.  Change this?
-#  - Should I even bother with Windows support?
-# - Include ACLs
-# - Include extended attributes
-# - Include SELinux properties?
-# - Include capabilities?
-# - Handle file names composed of undecodeable bytes
-# - Support Python 3.5's `st_[amc]time_ns` fields
-# - Use the `st_*` names for all fields?
-# - Add an option for including a dict of broken-out boolean permission fields
-#   (`IXOTH`, `IRUSR`, etc.)
-
 from   collections import OrderedDict, defaultdict
 import grp
 import json
