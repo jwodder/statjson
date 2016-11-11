@@ -4,18 +4,15 @@
 - Include unknown `stat` attributes in output
 - Include device name?
 - Use `stat` module to deconstruct flags
-- Calling `st_ctime` "`change_time`" is inaccurate on Windows.  Change this?
-    - Should I even bother with Windows support?
 - Include ACLs
+    - Use pylibacl <http://pylibacl.k1024.org>?
 - Include extended attributes
 - Include SELinux properties?
 - Include capabilities?
 - Handle file names composed of undecodeable bytes
-- Support Python 3.5's `st_[amc]time_ns` fields
 - Use the `st_*` names for all fields?
 - Add an option for including a dict of broken-out boolean permission fields
   (`IXOTH`, `IRUSR`, etc.)
 - Add an "`ls` mode" for stat'ing all of the entries in a given directory?
 - Add an option for outputting a stream of dicts instead of an array?
-- Add an option for displaying timestamps in UTC?
-- Add an option for forcing timestamps to be in ISO8601 format?
+- Properly convert `st_file_attributes` to something JSONable

@@ -9,12 +9,6 @@ import stat
 import sys
 import time
 
-TIMESTAMP_FMT = '%a %b %e %H:%M:%S %Z %Y'  # Tue Nov  8 21:44:39 UTC 2016
-# same format as used by `date(1)`
-
-# ISO 8601 format; requires Python 3 (for %z):
-#TIMESTAMP_FMT = '%Y-%m-%dT%H:%M:%S%z'
-
 extra_fields = [
     # Linux:
     ('st_blocks', 'blocks'),
@@ -37,12 +31,12 @@ extra_fields = [
 ]
 
 file_types = defaultdict(lambda: ('?', 'unknown'), {
-    stat.S_IFBLK: ('b', 'block_device'),
-    stat.S_IFCHR: ('c', 'char_device'),
-    stat.S_IFDIR: ('d', 'directory'),
-    stat.S_IFIFO: ('p', 'FIFO'),
-    stat.S_IFLNK: ('l', 'symlink'),
-    stat.S_IFREG: ('-', 'regular_file'),
+    stat.S_IFBLK:  ('b', 'block'),
+    stat.S_IFCHR:  ('c', 'character'),
+    stat.S_IFDIR:  ('d', 'directory'),
+    stat.S_IFIFO:  ('p', 'FIFO'),
+    stat.S_IFLNK:  ('l', 'symlink'),
+    stat.S_IFREG:  ('-', 'regular'),
     stat.S_IFSOCK: ('s', 'socket'),
 })
 
@@ -51,7 +45,7 @@ if sys.version_info[:2] >= (3,4):
     ### something be done in that case?
     file_types[stat.S_IFDOOR] = ('D', 'door')
     file_types[stat.S_IFPORT] = ('P', 'event_port')
-    file_types[stat.S_IFWHT] = ('w', 'whiteout')
+    file_types[stat.S_IFWHT]  = ('w', 'whiteout')
 
 def strmode(mode):  # cf. BSD's `strmode(3)`
     return file_types[stat.S_IFMT(mode)][0] \
@@ -71,8 +65,31 @@ def strmode(mode):  # cf. BSD's `strmode(3)`
             # ACLs -> '+'
             # none of the above: ' '
 
-def timestamp(secs):
-    return time.strftime(TIMESTAMP_FMT, time.localtime(secs))
+def iso8601(secs):
+    local = time.localtime(secs)
+    stamp = time.strftime('%Y-%m-%dT%H:%M:%S', local)
+    if sys.version_info[0] == 2:
+        if local.tm_isdst:
+            offset = time.altzone
+        else:
+            offset = time.timezone
+        if offset <= 0:
+            stamp += '+'
+            offset *= -1
+        else:
+            stamp += '-'
+        stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
+    else:
+        stamp += time.strftime('%z', local)
+    return stamp
+
+def about_time(secs, nanosecs):
+    about = OrderedDict()
+    about["seconds"] = secs
+    if nanosecs is not None:
+        about["nanoseconds"] = nanosecs
+    about["iso8601"] = iso8601(secs)
+    return about
 
 def main():
     stats = []
@@ -115,12 +132,9 @@ def main():
                 about["group"]["name"] = None
 
             about["size"] = st.st_size
-            about["access_time"] = st.st_atime
-            about["access_timestamp"] = timestamp(st.st_atime)
-            about["modify_time"] = st.st_mtime
-            about["modify_timestamp"] = timestamp(st.st_mtime)
-            about["change_time"] = st.st_ctime
-            about["change_timestamp"] = timestamp(st.st_ctime)
+            about["atime"] = about_time(st.st_atime, getattr(st, 'st_atime_ns', None))
+            about["mtime"] = about_time(st.st_mtime, getattr(st, 'st_mtime_ns', None))
+            about["ctime"] = about_time(st.st_ctime, getattr(st, 'st_ctime_ns', None))
             for attr, name in extra_fields:
                 try:
                     about[name] = getattr(st, attr)
