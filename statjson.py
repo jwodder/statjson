@@ -113,9 +113,13 @@ def main():
             about["success"] = True
             about["followed_symlink"] = os.path.islink(filename)
             about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
-            about["mode"] = st.st_mode
-            about["mode_octal"] = '0{0:0o}'.format(st.st_mode)
-            about["mode_str"] = strmode(st.st_mode)
+
+            about["mode"] = OrderedDict()
+            about["mode"]["integer"] = st.st_mode
+            about["mode"]["octal"] = '0{0:0o}'.format(st.st_mode)
+            about["mode"]["string"] = strmode(st.st_mode)
+
+            about["size"] = st.st_size
             about["inode"] = st.st_ino
             about["device"] = st.st_dev
             about["links"] = st.st_nlink
@@ -134,10 +138,10 @@ def main():
             except KeyError:
                 about["group"]["name"] = None
 
-            about["size"] = st.st_size
             about["atime"] = about_time(st.st_atime, getattr(st, 'st_atime_ns', None))
             about["mtime"] = about_time(st.st_mtime, getattr(st, 'st_mtime_ns', None))
             about["ctime"] = about_time(st.st_ctime, getattr(st, 'st_ctime_ns', None))
+
             for attr, name in extra_fields:
                 try:
                     about[name] = getattr(st, attr)
