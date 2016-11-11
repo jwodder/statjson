@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from   collections import OrderedDict, defaultdict
+from   datetime    import datetime
 import grp
 import json
 import os
@@ -66,22 +67,24 @@ def strmode(mode):  # cf. BSD's `strmode(3)`
             # none of the above: ' '
 
 def iso8601(secs):
-    local = time.localtime(secs)
-    stamp = time.strftime('%Y-%m-%dT%H:%M:%S', local)
-    if sys.version_info[0] == 2:
-        if local.tm_isdst:
-            offset = time.altzone
+    try:
+        from dateutil.tz import tzlocal
+    except ImportError:
+        stamp = datetime.fromtimestamp(secs).isoformat()
+        local = time.localtime(secs)
+        if sys.version_info[0] == 2:
+            offset = time.altzone if local.tm_isdst else time.timezone
+            if offset <= 0:
+                stamp += '+'
+                offset *= -1
+            else:
+                stamp += '-'
+            stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
         else:
-            offset = time.timezone
-        if offset <= 0:
-            stamp += '+'
-            offset *= -1
-        else:
-            stamp += '-'
-        stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
+            stamp += time.strftime('%z', local)
+        return stamp
     else:
-        stamp += time.strftime('%z', local)
-    return stamp
+        return datetime.fromtimestamp(secs, tzlocal()).isoformat()
 
 def about_time(secs, nanosecs):
     about = OrderedDict()
