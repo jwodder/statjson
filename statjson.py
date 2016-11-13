@@ -94,62 +94,60 @@ def about_time(secs, nanosecs):
     about["iso8601"] = iso8601(secs)
     return about
 
-def main():
-    stats = []
-    ok = True
-    for filename in sys.argv[1:]:
-        about = OrderedDict()
-        about["filename"] = filename
+def statjson(filename):
+    about = OrderedDict()
+    about["filename"] = filename
+    try:
+        st = os.stat(filename)
+    except Exception as e:
+        about["success"] = False
+        about["error"] = OrderedDict([
+            ("class", e.__class__.__name__),
+            ("message", str(e)),
+        ])
+        return about
+
+    about["success"] = True
+    about["followed_symlink"] = os.path.islink(filename)
+    about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
+
+    about["mode"] = OrderedDict()
+    about["mode"]["integer"] = st.st_mode
+    about["mode"]["octal"] = '0{0:0o}'.format(st.st_mode)
+    about["mode"]["string"] = strmode(st.st_mode)
+
+    about["size"] = st.st_size
+    about["inode"] = st.st_ino
+    about["device"] = st.st_dev
+    about["links"] = st.st_nlink
+
+    about["owner"] = OrderedDict()
+    about["owner"]["uid"] = st.st_uid
+    try:
+        about["owner"]["name"] = pwd.getpwuid(st.st_uid).pw_name
+    except KeyError:
+        about["owner"]["name"] = None
+
+    about["group"] = OrderedDict()
+    about["group"]["gid"] = st.st_gid
+    try:
+        about["group"]["name"] = grp.getgrgid(st.st_gid).gr_name
+    except KeyError:
+        about["group"]["name"] = None
+
+    about["atime"] = about_time(st.st_atime, getattr(st, 'st_atime_ns', None))
+    about["mtime"] = about_time(st.st_mtime, getattr(st, 'st_mtime_ns', None))
+    about["ctime"] = about_time(st.st_ctime, getattr(st, 'st_ctime_ns', None))
+
+    for attr, name in extra_fields:
         try:
-            st = os.stat(filename)
-        except Exception as e:
-            about["success"] = False
-            about["error"] = OrderedDict([
-                ("class", e.__class__.__name__),
-                ("message", str(e)),
-            ])
-            ok = False
-        else:
-            about["success"] = True
-            about["followed_symlink"] = os.path.islink(filename)
-            about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
+            about[name] = getattr(st, attr)
+        except AttributeError:
+            pass
 
-            about["mode"] = OrderedDict()
-            about["mode"]["integer"] = st.st_mode
-            about["mode"]["octal"] = '0{0:0o}'.format(st.st_mode)
-            about["mode"]["string"] = strmode(st.st_mode)
-
-            about["size"] = st.st_size
-            about["inode"] = st.st_ino
-            about["device"] = st.st_dev
-            about["links"] = st.st_nlink
-
-            about["owner"] = OrderedDict()
-            about["owner"]["uid"] = st.st_uid
-            try:
-                about["owner"]["name"] = pwd.getpwuid(st.st_uid).pw_name
-            except KeyError:
-                about["owner"]["name"] = None
-
-            about["group"] = OrderedDict()
-            about["group"]["gid"] = st.st_gid
-            try:
-                about["group"]["name"] = grp.getgrgid(st.st_gid).gr_name
-            except KeyError:
-                about["group"]["name"] = None
-
-            about["atime"] = about_time(st.st_atime, getattr(st, 'st_atime_ns', None))
-            about["mtime"] = about_time(st.st_mtime, getattr(st, 'st_mtime_ns', None))
-            about["ctime"] = about_time(st.st_ctime, getattr(st, 'st_ctime_ns', None))
-
-            for attr, name in extra_fields:
-                try:
-                    about[name] = getattr(st, attr)
-                except AttributeError:
-                    pass
-        stats.append(about)
-    print(json.dumps(stats, indent=4, separators=(',', ': ')))
-    sys.exit(0 if ok else 1)
+    return about
 
 if __name__ == '__main__':
-    main()
+    stats = [statjson(f) for f in sys.argv[1:]]
+    print(json.dumps(stats, indent=4, separators=(',', ': ')))
+    sys.exit(0 if all(st["success"] for st in stats) else 1)
