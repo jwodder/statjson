@@ -115,6 +115,8 @@ def statjson(filename, followlinks=True):
     about["success"] = True
     about["followed_symlink"] = followlinks and os.path.islink(filename)
     about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
+    if not followlinks and os.path.islink(filename):
+        about["target"] = os.readlink(filename)
 
     about["mode"] = OrderedDict()
     about["mode"]["integer"] = st.st_mode

@@ -1,4 +1,3 @@
-- When lstat'ing a symlink, include a field for the target path
 - Add an option for just outputting the `stat` structure directly as a dict?
 - Include unknown `stat` attributes in output
 - Use the `st_*` names for all fields?
