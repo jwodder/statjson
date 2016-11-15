@@ -1,14 +1,14 @@
-- Add an option for not following symlinks
-    - When lstat'ing a symlink, include a field for the target path
+- When lstat'ing a symlink, include a field for the target path
 - Add an option for just outputting the `stat` structure directly as a dict?
 - Include unknown `stat` attributes in output
 - Use the `st_*` names for all fields?
 - Include device name?
-- Use `stat` module to deconstruct flags
+- Use `stat` module to deconstruct flags and `st_file_attributes`
 - Include ACLs
     - Use pylibacl <http://pylibacl.k1024.org>?
 - Include extended attributes
     - Use xattr <https://github.com/xattr/xattr>
+    - Also support pyxattr <http://pyxattr.k1024.org>?
 - Include SELinux properties?
 - Include capabilities?
 - Handle file names composed of undecodeable bytes
@@ -16,4 +16,9 @@
   (`IXOTH`, `IRUSR`, etc.)
 - Add an "`ls` mode" for stat'ing all of the entries in a given directory?
 - Add an option for outputting a stream of dicts instead of an array?
-- Properly convert `st_file_attributes` to something JSONable
+- Display `st_birthtime` using `about_time`
+- Add a `setup.py` file
+- Add a function for converting just the return value of `os.stat` to a pretty
+  `dict`
+- Add a field containing the full canonical (i.e., with all symlinks resolved)
+  path to the file?

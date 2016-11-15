@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import argparse
 from   collections import OrderedDict, defaultdict
 from   datetime    import datetime
 import grp
@@ -48,7 +49,9 @@ if sys.version_info[:2] >= (3,4):
     file_types[stat.S_IFPORT] = ('P', 'event_port')
     file_types[stat.S_IFWHT]  = ('w', 'whiteout')
 
-def strmode(mode):  # cf. BSD's `strmode(3)`
+def strmode(mode):
+    # cf. BSD's `strmode(3)`
+    # also cf. Python 3.3+'s `stat.filemode`
     return file_types[stat.S_IFMT(mode)][0] \
             + ('r' if mode & stat.S_IRUSR else '-') \
             + ('w' if mode & stat.S_IWUSR else '-') \
@@ -94,11 +97,13 @@ def about_time(secs, nanosecs):
     about["iso8601"] = iso8601(secs)
     return about
 
-def statjson(filename):
+def statjson(filename, followlinks=True):
     about = OrderedDict()
     about["filename"] = filename
+    statter = os.stat if followlinks else os.lstat
+
     try:
-        st = os.stat(filename)
+        st = statter(filename)
     except Exception as e:
         about["success"] = False
         about["error"] = OrderedDict([
@@ -108,7 +113,7 @@ def statjson(filename):
         return about
 
     about["success"] = True
-    about["followed_symlink"] = os.path.islink(filename)
+    about["followed_symlink"] = followlinks and os.path.islink(filename)
     about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
 
     about["mode"] = OrderedDict()
@@ -147,7 +152,14 @@ def statjson(filename):
 
     return about
 
-if __name__ == '__main__':
-    stats = [statjson(f) for f in sys.argv[1:]]
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-P', '--no-dereference', action='store_true')
+    parser.add_argument('file', nargs='+')
+    args = parser.parse_args()
+    stats = [statjson(f, not args.no_dereference) for f in args.file]
     print(json.dumps(stats, indent=4, separators=(',', ': ')))
     sys.exit(0 if all(st["success"] for st in stats) else 1)
+
+if __name__ == '__main__':
+    main()
