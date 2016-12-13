@@ -10,7 +10,6 @@
     - Also support pyxattr <http://pyxattr.k1024.org>?
 - Include SELinux properties?
 - Include capabilities?
-- Handle file names composed of undecodeable bytes
 - Add an option for including a dict of broken-out boolean permission fields
   (`IXOTH`, `IRUSR`, etc.)
 - Add an "`ls` mode" for stat'ing all of the entries in a given directory?
@@ -21,3 +20,4 @@
   `dict`
 - Add a field containing the full canonical (i.e., with all symlinks resolved)
   path to the file?
+- Switch to Python 3?

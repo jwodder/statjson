@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import argparse
+from   base64      import b64encode
 from   collections import OrderedDict, defaultdict
 from   datetime    import datetime
 import grp
@@ -10,6 +11,11 @@ import pwd
 import stat
 import sys
 import time
+
+fsenc = sys.getfilesystemencoding()
+if 'ascii' in fsenc.lower():
+    # That can't be right.
+    fsenc = 'utf-8'
 
 extra_fields = [
     # Linux:
@@ -97,9 +103,20 @@ def about_time(secs, nanosecs):
     about["iso8601"] = iso8601(secs)
     return about
 
+def decode(s):
+    if isinstance(s, bytes):
+        try:
+            s = s.decode(fsenc)
+        except UnicodeDecodeError:
+            return 'base64:' + b64encode(s)
+    if s.startswith('base64:'):
+        return 'base64:' + b64encode(s.encode(fsenc))
+    else:
+        return s
+
 def statjson(filename, followlinks=True):
     about = OrderedDict()
-    about["filename"] = filename
+    about["filename"] = decode(filename)
     statter = os.stat if followlinks else os.lstat
 
     try:
@@ -116,7 +133,7 @@ def statjson(filename, followlinks=True):
     about["followed_symlink"] = followlinks and os.path.islink(filename)
     about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
     if not followlinks and os.path.islink(filename):
-        about["target"] = os.readlink(filename)
+        about["target"] = decode(os.readlink(filename))
 
     about["mode"] = OrderedDict()
     about["mode"]["integer"] = st.st_mode
