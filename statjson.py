@@ -48,12 +48,12 @@ file_types = defaultdict(lambda: ('?', 'unknown'), {
     stat.S_IFSOCK: ('s', 'socket'),
 })
 
-if sys.version_info[:2] >= (3,4):
-    ### These constants are 0 when the platform doesn't support them; should
-    ### something be done in that case?
+if getattr(stat, 'S_IFDOOR', 0) != 0:
     file_types[stat.S_IFDOOR] = ('D', 'door')
+if getattr(stat, 'S_IFPORT', 0) != 0:
     file_types[stat.S_IFPORT] = ('P', 'event_port')
-    file_types[stat.S_IFWHT]  = ('w', 'whiteout')
+if getattr(stat, 'S_IFWHT', 0) != 0:
+    file_types[stat.S_IFWHT] = ('w', 'whiteout')
 
 def strmode(mode):
     # cf. BSD's `strmode(3)`
