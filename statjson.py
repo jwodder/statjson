@@ -105,9 +105,9 @@ def decode(s):
         try:
             s = s.decode(fsenc)
         except UnicodeDecodeError:
-            return 'base64:' + b64encode(s)
+            return 'base64:' + b64encode(s).decode('us-ascii')
     if s.startswith('base64:'):
-        return 'base64:' + b64encode(s.encode(fsenc))
+        return 'base64:' + b64encode(s.encode(fsenc)).decode('us-ascii')
     else:
         return s
 
@@ -127,17 +127,18 @@ def statjson(filename, followlinks=True):
         return about
 
     about["success"] = True
-    about["realpath"] = decode(os.path.realpath(filename))
-    about["followed_symlink"] = followlinks and os.path.islink(filename)
+    if followlinks:
+        about["followed_symlink"] = os.path.islink(filename)
+    else:
+        about["followed_symlink"] = False
+        if os.path.islink(filename):
+            about["target"] = decode(os.readlink(filename))
     about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
-    if not followlinks and os.path.islink(filename):
-        about["target"] = decode(os.readlink(filename))
-
+    about["realpath"] = decode(os.path.realpath(filename))
     about["mode"] = OrderedDict()
     about["mode"]["integer"] = st.st_mode
     about["mode"]["octal"] = '0{0:0o}'.format(st.st_mode)
     about["mode"]["string"] = strmode(st.st_mode)
-
     about["size"] = st.st_size
     about["inode"] = st.st_ino
     about["device"] = st.st_dev
@@ -174,6 +175,8 @@ def main():
     parser.add_argument('-P', '--no-dereference', action='store_true')
     parser.add_argument('file', nargs='+')
     args = parser.parse_args()
+    if sys.version_info[:2] >= (3,2):
+        args.file = [os.fsencode(f) for f in args.file]
     stats = [statjson(f, not args.no_dereference) for f in args.file]
     print(json.dumps(stats, indent=4, separators=(',', ': ')))
     sys.exit(0 if all(st["success"] for st in stats) else 1)

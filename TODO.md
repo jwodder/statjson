@@ -18,5 +18,3 @@
 - Add a function for converting just the return value of `os.stat` to a pretty
   `dict`?
 - Switch to Python 3?
-- Python 3: Call `os.fsencode()` on filenames specified on the command line
-  before passing to `statjson()`?
