@@ -1,4 +1,3 @@
-- Add an option for just outputting the `stat` structure directly as a dict?
 - Include unknown `stat` attributes in output
 - Use the `st_*` names for all fields?
 - Include device name?
@@ -18,8 +17,6 @@
 - Add a `setup.py` file
 - Add a function for converting just the return value of `os.stat` to a pretty
   `dict`?
-- Add a field containing the full canonical (i.e., with all symlinks resolved)
-  path to the file?
 - Switch to Python 3?
 - Python 3: Call `os.fsencode()` on filenames specified on the command line
   before passing to `statjson()`?

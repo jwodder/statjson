@@ -87,7 +87,7 @@ def iso8601(secs):
             offset *= -1
         else:
             stamp += '-'
-        stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
+        stamp += '{0:02}:{1:02}'.format(*divmod(offset // 60, 60))
         return stamp
     else:
         return datetime.fromtimestamp(secs, tzlocal()).isoformat()
@@ -127,6 +127,7 @@ def statjson(filename, followlinks=True):
         return about
 
     about["success"] = True
+    about["realpath"] = decode(os.path.realpath(filename))
     about["followed_symlink"] = followlinks and os.path.islink(filename)
     about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
     if not followlinks and os.path.islink(filename):
