@@ -17,7 +17,9 @@
 - Display `st_birthtime` using `about_time`
 - Add a `setup.py` file
 - Add a function for converting just the return value of `os.stat` to a pretty
-  `dict`
+  `dict`?
 - Add a field containing the full canonical (i.e., with all symlinks resolved)
   path to the file?
 - Switch to Python 3?
+- Python 3: Call `os.fsencode()` on filenames specified on the command line
+  before passing to `statjson()`?

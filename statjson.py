@@ -81,16 +81,13 @@ def iso8601(secs):
     except ImportError:
         stamp = datetime.fromtimestamp(secs).isoformat()
         local = time.localtime(secs)
-        if sys.version_info[0] == 2:
-            offset = time.altzone if local.tm_isdst else time.timezone
-            if offset <= 0:
-                stamp += '+'
-                offset *= -1
-            else:
-                stamp += '-'
-            stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
+        offset = time.altzone if local.tm_isdst else time.timezone
+        if offset <= 0:
+            stamp += '+'
+            offset *= -1
         else:
-            stamp += time.strftime('%z', local)
+            stamp += '-'
+        stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
         return stamp
     else:
         return datetime.fromtimestamp(secs, tzlocal()).isoformat()
