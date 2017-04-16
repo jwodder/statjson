@@ -1,5 +1,7 @@
 - Include unknown `stat` attributes in output
-- Use the `st_*` names for all fields?
+- Add an option for using fields' internal (`st_*`) names instead of
+  human-friendly names
+    - Do this by default?
 - Include device name?
 - Use `stat` module to deconstruct flags and `st_file_attributes`
 - Include ACLs
@@ -15,6 +17,7 @@
 - Add an option for outputting a stream of dicts instead of an array?
 - Display `st_birthtime` using `about_time`
 - Add a `setup.py` file
+- Write a README, put on GitHub, etc.
 - Add a function for converting just the return value of `os.stat` to a pretty
   `dict`?
-- Switch to Python 3?
+- Include a "basename" field?
