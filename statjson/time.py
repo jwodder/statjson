@@ -3,21 +3,16 @@ from   datetime    import datetime
 import time
 
 def iso8601(secs):
-    try:
-        from dateutil.tz import tzlocal
-    except ImportError:
-        stamp = datetime.fromtimestamp(secs).isoformat()
-        local = time.localtime(secs)
-        offset = time.altzone if local.tm_isdst else time.timezone
-        if offset <= 0:
-            stamp += '+'
-            offset *= -1
-        else:
-            stamp += '-'
-        stamp += '{0:02}:{1:02}'.format(*divmod(offset // 60, 60))
-        return stamp
+    stamp = datetime.fromtimestamp(secs).isoformat()
+    local = time.localtime(secs)
+    offset = time.altzone if local.tm_isdst else time.timezone
+    if offset <= 0:
+        stamp += '+'
+        offset *= -1
     else:
-        return datetime.fromtimestamp(secs, tzlocal()).isoformat()
+        stamp += '-'
+    stamp += '{0:02}:{1:02}'.format(*divmod(offset // 60, 60))
+    return stamp
 
 def about_time(secs, nanosecs):
     about = OrderedDict()
