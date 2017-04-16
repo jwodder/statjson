@@ -13,7 +13,8 @@
 - Use `stat` module to deconstruct flags and `st_file_attributes`
 - Display `st_birthtime` using `about_time`
 
-- Add a `setup.py` file
+- Fill in classifiers & keywords in `setup.py`
+- Write docstrings and `--help` output
 - Write a README, put on GitHub, etc.
 
 - Support more file attributes:
