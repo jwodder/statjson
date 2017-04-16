@@ -1,9 +1,6 @@
-#!/usr/bin/python3
-# Requires: Python 3.3+
 import argparse
 from   base64      import b64encode
-from   collections import OrderedDict, defaultdict
-from   datetime    import datetime
+from   collections import OrderedDict
 import grp
 import json
 import os
@@ -11,7 +8,8 @@ import os.path
 import pwd
 import stat
 import sys
-import time
+from   .filetypes import file_types, strmode
+from   .time      import about_time
 
 fsenc = sys.getfilesystemencoding()
 if 'ascii' in fsenc.lower():
@@ -38,68 +36,6 @@ extra_fields = [
     # Windows:
     ('st_file_attributes', 'file_attributes'),
 ]
-
-file_types = defaultdict(lambda: ('?', 'unknown'), {
-    stat.S_IFBLK:  ('b', 'block'),
-    stat.S_IFCHR:  ('c', 'character'),
-    stat.S_IFDIR:  ('d', 'directory'),
-    stat.S_IFIFO:  ('p', 'FIFO'),
-    stat.S_IFLNK:  ('l', 'symlink'),
-    stat.S_IFREG:  ('-', 'regular'),
-    stat.S_IFSOCK: ('s', 'socket'),
-})
-
-if getattr(stat, 'S_IFDOOR', 0) != 0:
-    file_types[stat.S_IFDOOR] = ('D', 'door')
-if getattr(stat, 'S_IFPORT', 0) != 0:
-    file_types[stat.S_IFPORT] = ('P', 'event_port')
-if getattr(stat, 'S_IFWHT', 0) != 0:
-    file_types[stat.S_IFWHT] = ('w', 'whiteout')
-
-def strmode(mode):
-    # cf. BSD's `strmode(3)`
-    # also cf. Python 3.3+'s `stat.filemode`
-    return file_types[stat.S_IFMT(mode)][0] \
-            + ('r' if mode & stat.S_IRUSR else '-') \
-            + ('w' if mode & stat.S_IWUSR else '-') \
-            + ('Ss' if mode&stat.S_ISUID else '-x')[bool(mode&stat.S_IXUSR)] \
-            + ('r' if mode & stat.S_IRGRP else '-') \
-            + ('w' if mode & stat.S_IWGRP else '-') \
-            + ('Ss' if mode&stat.S_ISGID else '-x')[bool(mode&stat.S_IXGRP)] \
-            + ('r' if mode & stat.S_IROTH else '-') \
-            + ('w' if mode & stat.S_IWOTH else '-') \
-            + ('Tt' if mode&stat.S_ISVTX else '-x')[bool(mode&stat.S_IXOTH)] \
-            + ' '
-            ### TODO: Set the last character as follows:
-            # extended attributes -> '@' (Mac OS X)
-            # security context, no ACLs -> '.' (GNU ls)
-            # ACLs -> '+'
-            # none of the above: ' '
-
-def iso8601(secs):
-    try:
-        from dateutil.tz import tzlocal
-    except ImportError:
-        stamp = datetime.fromtimestamp(secs).isoformat()
-        local = time.localtime(secs)
-        offset = time.altzone if local.tm_isdst else time.timezone
-        if offset <= 0:
-            stamp += '+'
-            offset *= -1
-        else:
-            stamp += '-'
-        stamp += '{0:02}:{1:02}'.format(*divmod(offset // 60, 60))
-        return stamp
-    else:
-        return datetime.fromtimestamp(secs, tzlocal()).isoformat()
-
-def about_time(secs, nanosecs):
-    about = OrderedDict()
-    about["seconds"] = secs
-    if nanosecs is not None:
-        about["nanoseconds"] = nanosecs
-    about["iso8601"] = iso8601(secs)
-    return about
 
 def decode(s):
     if isinstance(s, bytes):
