@@ -1,5 +1,3 @@
-- Make this POSIX-only; don't try to support Windows
-
 - Add an option for using fields' internal (`st_*`) names instead of
   human-friendly names
     - Do this by default?
