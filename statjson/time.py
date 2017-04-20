@@ -14,7 +14,7 @@ def iso8601(secs):
     stamp += '{0:02}:{1:02}'.format(*divmod(offset // 60, 60))
     return stamp
 
-def about_time(secs, nanosecs):
+def about_time(secs, nanosecs=None):
     about = OrderedDict()
     about["seconds"] = secs
     if nanosecs is not None:

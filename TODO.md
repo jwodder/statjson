@@ -1,3 +1,5 @@
+- Make this POSIX-only; don't try to support Windows
+
 - Add an option for using fields' internal (`st_*`) names instead of
   human-friendly names
     - Do this by default?
@@ -10,8 +12,10 @@
 - Include unknown `stat` attributes in output
 - Include device name?
 - Include a "basename" field?
-- Use `stat` module to deconstruct flags and `st_file_attributes`
+- Use `stat` module to deconstruct flags
 - Display `st_birthtime` using `about_time`
+- Display nanosecond timestamps in ISO format (with full precision) ?
+- Display nanosecond timestamps as part of the non-nanosecond timestamps?
 
 - Fill in classifiers & keywords in `setup.py`
 - Write docstrings and `--help` output
