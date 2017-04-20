@@ -1,6 +1,3 @@
-- Add an option for using fields' internal (`st_*`) names instead of
-  human-friendly names
-    - Do this by default?
 - Add an option for including a dict of broken-out boolean permission fields
   (`IXOTH`, `IRUSR`, etc.)
 - Add an "`ls` mode" for stat'ing all of the entries in a given directory?

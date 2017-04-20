@@ -25,7 +25,7 @@ def decode(s):
     else:
         return s
 
-def statjson(filename, followlinks=True, human_names=True):
+def statjson(filename, followlinks=True, human_names=False):
     about = OrderedDict()
     about["filename"] = decode(filename)
     statter = os.stat if followlinks else os.lstat
@@ -58,11 +58,15 @@ def statjson(filename, followlinks=True, human_names=True):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-H', '--human-names', action='store_true')
     parser.add_argument('-P', '--no-dereference', action='store_true')
     parser.add_argument('file', nargs='+')
     args = parser.parse_args()
     args.file = [os.fsencode(f) for f in args.file]
-    stats = [statjson(f, not args.no_dereference) for f in args.file]
+    stats = [
+        statjson(f, not args.no_dereference, args.human_names)
+        for f in args.file
+    ]
     print(json.dumps(stats, indent=4))
     sys.exit(0 if all(st["success"] for st in stats) else 1)
 
