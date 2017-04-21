@@ -28,9 +28,8 @@ def decode(s):
 def statjson(filename, follow_symlinks=True, human_names=False):
     about = OrderedDict()
     about["filename"] = decode(filename)
-    statter = os.stat if follow_symlinks else os.lstat
     try:
-        st = statter(filename)
+        st = os.stat(filename, follow_symlinks=follow_symlinks)
     except Exception as e:
         about["success"] = False
         about["error"] = OrderedDict([
