@@ -25,10 +25,10 @@ def decode(s):
     else:
         return s
 
-def statjson(filename, followlinks=True, human_names=False):
+def statjson(filename, follow_symlinks=True, human_names=False):
     about = OrderedDict()
     about["filename"] = decode(filename)
-    statter = os.stat if followlinks else os.lstat
+    statter = os.stat if follow_symlinks else os.lstat
     try:
         st = statter(filename)
     except Exception as e:
@@ -39,7 +39,7 @@ def statjson(filename, followlinks=True, human_names=False):
         ])
     else:
         about["success"] = True
-        if followlinks:
+        if follow_symlinks:
             about["followed_symlink"] = os.path.islink(filename)
         else:
             about["followed_symlink"] = False
