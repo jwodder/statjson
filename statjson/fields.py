@@ -1,6 +1,7 @@
 from   collections import namedtuple, OrderedDict
 import grp
 import pwd
+import stat
 from   .filetypes  import strmode
 from   .time       import about_time
 
@@ -14,6 +15,13 @@ def about_mode(m):
         ("integer", m),
         ("octal", '0{0:0o}'.format(m)),
         ("string", strmode(m)),
+        ("bits", OrderedDict(
+            (prop, bool(m & getattr(stat, prop)))
+            for prop in 'S_ISUID S_ISGID S_ISVTX'
+                        ' S_IRUSR S_IWUSR S_IXUSR'
+                        ' S_IRGRP S_IWGRP S_IXGRP'
+                        ' S_IROTH S_IWOTH S_IXOTH'.split()
+        ))
     ])
 
 def about_user(uid):

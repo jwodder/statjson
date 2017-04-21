@@ -1,5 +1,3 @@
-- Add an option for including a dict of broken-out boolean permission fields
-  (`IXOTH`, `IRUSR`, etc.)
 - Add an "`ls` mode" for stat'ing all of the entries in a given directory?
 - Add a function for converting just the return value of `os.stat` to a pretty
   `dict`?
