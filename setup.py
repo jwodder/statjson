@@ -10,7 +10,7 @@ setup(
     ###keywords='',
     description='stat(2) output as JSON',
     #long_description - in setup.cfg
-    ###url='https://github.com/jwodder/statjson',
+    url='https://github.com/jwodder/statjson',
 
     python_requires='~=3.3',
     install_requires=[],

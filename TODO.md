@@ -19,7 +19,6 @@
 
 - Fill in classifiers & keywords in `setup.py`
 - Write docstrings and `--help` output
-- Write a README, put on GitHub, etc.
 
 - Support more file attributes:
     - Include ACLs
