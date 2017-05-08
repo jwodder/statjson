@@ -11,7 +11,7 @@ def iso8601(secs):
         offset *= -1
     else:
         stamp += '-'
-    stamp += '{0:02}:{1:02}'.format(*divmod(offset // 60, 60))
+    stamp += '{:02}:{:02}'.format(*divmod(offset // 60, 60))
     return stamp
 
 def about_time(secs, nanosecs=None):
