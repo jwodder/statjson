@@ -44,7 +44,7 @@ FIELDS = [
     Field('st_ino',   'inode',  identity),
     Field('st_dev',   'device', identity),
     Field('st_nlink', 'links',  identity),
-    Field('st_uid',   'owner',  about_user),
+    Field('st_uid',   'user',   about_user),
     Field('st_gid',   'group',  about_group),
     Field('st_atime', 'access_time', about_time),
     Field('st_mtime', 'modification_time', about_time),
