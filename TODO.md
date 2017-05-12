@@ -17,8 +17,8 @@
 - Rename `-H` to `-h` (without interferring with `--help`) and make `-H` the
   negation of `-P`
 
-- Fill in classifiers & keywords in `setup.py`
 - Write docstrings and `--help` output
+- Expand README
 
 - Support more file attributes:
     - Include ACLs
