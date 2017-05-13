@@ -38,6 +38,14 @@ def about_group(gid):
         name = None
     return OrderedDict([('gid', gid), ('name', name)])
 
+def about_flags(flags):
+    return OrderedDict(
+        (prop, bool(flags & getattr(stat, prop)))
+        for prop in 'UF_NODUMP UF_IMMUTABLE UF_APPEND UF_OPAQUE UF_NOUNLINK'
+                    ' UF_COMPRESSED UF_HIDDEN SF_ARCHIVED SF_IMMUTABLE'
+                    ' SF_APPEND SF_NOUNLINK SF_SNAPSHOT'.split()
+    )
+
 FIELDS = [
     Field('st_mode',  'mode',   about_mode),
     Field('st_size',  'size',   identity),
@@ -58,7 +66,7 @@ FIELDS = [
     Field('st_blksize', 'block_size', identity),
     Field('st_rdev', 'rdev', identity),
         # "type of device if an inode device" / "device ID (if special file)"
-    Field('st_flags', 'flags', identity),
+    Field('st_flags', 'flags', about_flags),
 
     # FreeBSD (including Mac OS X):
     Field('st_gen', 'generation', identity),  # file generation number
