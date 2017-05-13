@@ -44,7 +44,7 @@ def statjson(filename, follow_symlinks=True, human_names=False):
             about["followed_symlink"] = False
             if os.path.islink(filename):
                 about["target"] = decode(os.readlink(filename))
-        about["filetype"] = file_types[stat.S_IFMT(st.st_mode)][1]
+        about["filetype"] = file_types[stat.S_IFMT(st.st_mode)]
         about["realpath"] = decode(os.path.realpath(filename))
         for field in FIELDS:
             key = field.human_name if human_names else field.st_name

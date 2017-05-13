@@ -16,6 +16,7 @@
   values with `os.major` and `os.minor`
 - Rename `-H` to `-h` (without interferring with `--help`) and make `-H` the
   negation of `-P`
+- Use symbolic names for `filetype` when `--human-names` is not in effect?
 
 - Write docstrings and `--help` output
 - Expand README
