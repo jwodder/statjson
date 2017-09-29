@@ -9,7 +9,6 @@
 - Display nanosecond timestamps in ISO format (with full precision) ?
 - Display nanosecond timestamps as part of the non-nanosecond timestamps?
 - Add human names for mode and flag bitfields
-- Add an option for omitting false mode & flag bitfields?
 - Add an option for displaying the values of the `stat` dict verbatim instead
   of formatting them?
 - Decompose device numbers (both `st_dev` and `st_rdev`) into major & minor

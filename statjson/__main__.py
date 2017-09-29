@@ -33,7 +33,7 @@ def statjson(filename, follow_symlinks=True, human_names=False):
     except Exception as e:
         about["success"] = False
         about["error"] = OrderedDict([
-            ("class", e.__class__.__name__),
+            ("class", type(e).__name__),
             ("message", str(e)),
         ])
     else:
