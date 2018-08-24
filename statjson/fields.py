@@ -56,12 +56,12 @@ def about_device(dev):
 
 FIELDS = [
     Field('st_mode',  'mode',   about_mode),
-    Field('st_size',  'size',   identity),
     Field('st_ino',   'inode',  identity),
     Field('st_dev',   'device', about_device),
     Field('st_nlink', 'links',  identity),
     Field('st_uid',   'user',   about_user),
     Field('st_gid',   'group',  about_group),
+    Field('st_size',  'size',   identity),
     Field('st_atime', 'access_time', about_time),
     Field('st_mtime', 'modification_time', about_time),
     Field('st_ctime', 'change_time', about_time),
