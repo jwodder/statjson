@@ -48,11 +48,11 @@ def about_flags(flags):
     )
 
 def about_device(dev):
-    return {
-        "device_id": dev,
-        "major_id": os.major(dev),
-        "minor_id": os.minor(dev),
-    }
+    return OrderedDict([
+        ("device_id", dev),
+        ("major_id", os.major(dev)),
+        ("minor_id", os.minor(dev)),
+    ])
 
 FIELDS = [
     Field('st_mode',  'mode',   about_mode),
