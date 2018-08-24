@@ -1,5 +1,6 @@
 from   collections import namedtuple, OrderedDict
 import grp
+import os
 import pwd
 import stat
 from   .filetypes  import strmode
@@ -46,11 +47,18 @@ def about_flags(flags):
                     ' SF_APPEND SF_NOUNLINK SF_SNAPSHOT'.split()
     )
 
+def about_device(dev):
+    return {
+        "device_id": dev,
+        "major_id": os.major(dev),
+        "minor_id": os.minor(dev),
+    }
+
 FIELDS = [
     Field('st_mode',  'mode',   about_mode),
     Field('st_size',  'size',   identity),
     Field('st_ino',   'inode',  identity),
-    Field('st_dev',   'device', identity),
+    Field('st_dev',   'device', about_device),
     Field('st_nlink', 'links',  identity),
     Field('st_uid',   'user',   about_user),
     Field('st_gid',   'group',  about_group),
@@ -64,7 +72,7 @@ FIELDS = [
     # Linux:
     Field('st_blocks', 'blocks', identity),
     Field('st_blksize', 'block_size', identity),
-    Field('st_rdev', 'rdev', identity),
+    Field('st_rdev', 'rdev', about_device),
         # "type of device if an inode device" / "device ID (if special file)"
     Field('st_flags', 'flags', about_flags),
 
