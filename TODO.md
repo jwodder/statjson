@@ -1,6 +1,5 @@
 - Add an "`ls` mode" for stat'ing all of the entries in a given directory?
     - Implement this as a separate/alternate entry point?
-- Add a command for outputting the results of `os.statvfs` as JSON?
 - Add a function for converting just the return value of `os.stat` to a pretty
   `dict`?
 
@@ -17,7 +16,8 @@
 
 - Write docstrings and `--help` output
 - Expand README
-- Add tests
+- Add more tests
+- Set up Travis integration
 
 - Support more file attributes:
     - Include ACLs
@@ -28,3 +28,4 @@
         - Also support pyxattr <http://pyxattr.k1024.org>?
     - Include SELinux properties?
     - Include capabilities?
+    - Include pathconf information?

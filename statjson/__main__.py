@@ -6,7 +6,7 @@ import os
 import os.path
 import stat
 import sys
-from   .fields     import FIELDS
+from   .fields     import stat2dict
 from   .filetypes  import file_types
 
 fsenc = sys.getfilesystemencoding()
@@ -46,13 +46,7 @@ def statjson(filename, follow_symlinks=True, human_names=False):
                 about["target"] = decode(os.readlink(filename))
         about["filetype"] = file_types[stat.S_IFMT(st.st_mode)]
         about["realpath"] = decode(os.path.realpath(filename))
-        for field in FIELDS:
-            key = field.human_name if human_names else field.st_name
-            try:
-                value = getattr(st, field.st_name)
-            except AttributeError:
-                continue
-            about[key] = field.formatter(value)
+        about.update(stat2dict(st, human_names=human_names))
     return about
 
 def main():

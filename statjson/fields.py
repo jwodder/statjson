@@ -84,3 +84,14 @@ FIELDS = [
     # st_rsize, st_creator, st_type - Mac OS Classic only
     # st_file_attributes - Windows only
 ]
+
+def stat2dict(st, human_names=False):
+    about = OrderedDict()
+    for field in FIELDS:
+        key = field.human_name if human_names else field.st_name
+        try:
+            value = getattr(st, field.st_name)
+        except AttributeError:
+            continue
+        about[key] = field.formatter(value)
+    return about
