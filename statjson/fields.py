@@ -6,7 +6,7 @@ import stat
 from   .filetypes  import strmode
 from   .time       import about_time
 
-Field = namedtuple('Field', 'st_name human_name formatter')
+Field = namedtuple('Field', 'attr st_name human_name formatter')
 
 def identity(x):
     return x
@@ -55,32 +55,50 @@ def about_device(dev):
     ])
 
 FIELDS = [
-    Field('st_mode',  'mode',   about_mode),
-    Field('st_ino',   'inode',  identity),
-    Field('st_dev',   'device', about_device),
-    Field('st_nlink', 'links',  identity),
-    Field('st_uid',   'user',   about_user),
-    Field('st_gid',   'group',  about_group),
-    Field('st_size',  'size',   identity),
-    Field('st_atime', 'access_time', about_time),
-    Field('st_mtime', 'modification_time', about_time),
-    Field('st_ctime', 'change_time', about_time),
-    Field('st_atime_ns', 'access_time_nano', identity),
-    Field('st_mtime_ns', 'modification_time_nano', identity),
-    Field('st_ctime_ns', 'change_time_nano', identity),
+    Field('st_mode',  'st_mode',  'mode',              about_mode),
+    Field('st_ino',   'st_ino',   'inode',             identity),
+    Field('st_dev',   'st_dev',   'device',            about_device),
+    Field('st_nlink', 'st_nlink', 'links',             identity),
+    Field('st_uid',   'st_uid',   'user',              about_user),
+    Field('st_gid',   'st_gid',   'group',             about_group),
+    Field('st_size',  'st_size',  'size',              identity),
+    Field('st_atime', 'st_atime', 'access_time',       about_time),
+    Field('st_mtime', 'st_mtime', 'modification_time', about_time),
+    Field('st_ctime', 'st_ctime', 'change_time',       about_time),
+
+    Field(
+        'st_atime_ns',
+        ('st_atime', 'nanoseconds'),
+        ('access_time', 'nanoseconds'),
+        identity,
+    ),
+    Field(
+        'st_mtime_ns',
+        ('st_mtime', 'nanoseconds'),
+        ('modification_time', 'nanoseconds'),
+        identity,
+    ),
+    Field(
+        'st_ctime_ns',
+        ('st_ctime', 'nanoseconds'),
+        ('change_time', 'nanoseconds'),
+        identity,
+    ),
 
     # Linux:
-    Field('st_blocks', 'blocks', identity),
-    Field('st_blksize', 'block_size', identity),
-    Field('st_rdev', 'rdev', about_device),
+    Field('st_blocks',  'st_blocks',  'blocks',     identity),
+    Field('st_blksize', 'st_blksize', 'block_size', identity),
+    Field('st_rdev',    'st_rdev',    'rdev',       about_device),
         # "type of device if an inode device" / "device ID (if special file)"
-    Field('st_flags', 'flags', about_flags),
+    Field('st_flags',   'st_flags',   'flags',      about_flags),
 
     # FreeBSD (including Mac OS X):
-    Field('st_gen', 'generation', identity),  # file generation number
-    Field('st_birthtime', 'creation_time', about_time),
+    Field('st_gen',       'st_gen',       'generation',    identity),
+        # file generation number
+    Field('st_birthtime', 'st_birthtime', 'creation_time', about_time),
 
     # st_ftype, st_attrs, st_obtype - RISC OS only; not supported by Python 3
+    # st_fstype - Solaris only
     # st_rsize, st_creator, st_type - Mac OS Classic only
     # st_file_attributes - Windows only
 ]
@@ -88,10 +106,17 @@ FIELDS = [
 def stat2dict(st, human_names=False):
     about = OrderedDict()
     for field in FIELDS:
-        key = field.human_name if human_names else field.st_name
         try:
-            value = getattr(st, field.st_name)
+            value = getattr(st, field.attr)
         except AttributeError:
             continue
-        about[key] = field.formatter(value)
+        value = field.formatter(value)
+        key = field.human_name if human_names else field.st_name
+        if isinstance(key, tuple):
+            d = about
+            for k in key[:-1]:
+                d = d[k]
+            d[key[-1]] = value
+        else:
+            about[key] = value
     return about

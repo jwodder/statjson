@@ -55,18 +55,18 @@ st_dict = OrderedDict([
     ("st_atime", OrderedDict([
         ("seconds", 1535036782.6969066),
         ("iso8601", "2018-08-23T11:06:22.696907-04:00"),
+        ("nanoseconds", 1535036782696906483),
     ])),
     ("st_mtime", OrderedDict([
         ("seconds", 1535036783.6969066),
         ("iso8601", "2018-08-23T11:06:23.696907-04:00"),
+        ("nanoseconds", 1535036783696906483),
     ])),
     ("st_ctime", OrderedDict([
         ("seconds", 1535036784.6969066),
         ("iso8601", "2018-08-23T11:06:24.696907-04:00"),
+        ("nanoseconds", 1535036784696906483),
     ])),
-    ("st_atime_ns", 1535036782696906483),
-    ("st_mtime_ns", 1535036783696906483),
-    ("st_ctime_ns", 1535036784696906483),
 ])
 
 st_human_dict = OrderedDict([
@@ -102,18 +102,18 @@ st_human_dict = OrderedDict([
     ("access_time", OrderedDict([
         ("seconds", 1535036782.6969066),
         ("iso8601", "2018-08-23T11:06:22.696907-04:00"),
+        ("nanoseconds", 1535036782696906483),
     ])),
     ("modification_time", OrderedDict([
         ("seconds", 1535036783.6969066),
         ("iso8601", "2018-08-23T11:06:23.696907-04:00"),
+        ("nanoseconds", 1535036783696906483),
     ])),
     ("change_time", OrderedDict([
         ("seconds", 1535036784.6969066),
         ("iso8601", "2018-08-23T11:06:24.696907-04:00"),
+        ("nanoseconds", 1535036784696906483),
     ])),
-    ("access_time_nano", 1535036782696906483),
-    ("modification_time_nano", 1535036783696906483),
-    ("change_time_nano", 1535036784696906483),
 ])
 
 st_linux = copy(st)
