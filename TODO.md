@@ -18,6 +18,7 @@
 - Expand README
 - Add more tests
 - Set up Travis integration
+- Add "posix" to keywords & repo topics?
 
 - Support more file attributes:
     - Include ACLs
