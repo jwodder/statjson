@@ -116,11 +116,11 @@ st_human_dict = OrderedDict([
     ("change_time_nano", 1535036784696906483),
 ])
 
-st_unix = copy(st)
-st_unix.st_blocks  = 16
-st_unix.st_blksize = 4096
-st_unix.st_rdev    = 0
-st_unix.st_flags   = 0
+st_linux = copy(st)
+st_linux.st_blocks  = 16
+st_linux.st_blksize = 4096
+st_linux.st_rdev    = 0
+st_linux.st_flags   = 0
 
 st_freebsd = copy(st)
 st_freebsd.st_gen = 0
@@ -140,39 +140,39 @@ def test_basic():
 def test_human_names():
     assert stat2dict(st, human_names=True) == st_human_dict
 
-def test_unix():
-    st_unix_dict = st_dict.copy()
-    st_unix_dict["st_blocks"] = 16
-    st_unix_dict["st_blksize"] = 4096
-    st_unix_dict["st_rdev"] = OrderedDict([
+def test_linux():
+    st_linux_dict = st_dict.copy()
+    st_linux_dict["st_blocks"] = 16
+    st_linux_dict["st_blksize"] = 4096
+    st_linux_dict["st_rdev"] = OrderedDict([
         ("device_id", 0),
         ("major_id", 0),
         ("minor_id", 0),
     ])
-    st_unix_dict["st_flags"] = OrderedDict([
+    st_linux_dict["st_flags"] = OrderedDict([
         (k, False)
         for k in 'UF_NODUMP UF_IMMUTABLE UF_APPEND UF_OPAQUE UF_NOUNLINK'
                  ' UF_COMPRESSED UF_HIDDEN SF_ARCHIVED SF_IMMUTABLE'
                  ' SF_APPEND SF_NOUNLINK SF_SNAPSHOT'.split()
     ])
-    assert stat2dict(st_unix) == st_unix_dict
+    assert stat2dict(st_linux) == st_linux_dict
 
-def test_unix_human_names():
-    st_unix_dict = st_human_dict.copy()
-    st_unix_dict["blocks"] = 16
-    st_unix_dict["block_size"] = 4096
-    st_unix_dict["rdev"] = OrderedDict([
+def test_linux_human_names():
+    st_linux_dict = st_human_dict.copy()
+    st_linux_dict["blocks"] = 16
+    st_linux_dict["block_size"] = 4096
+    st_linux_dict["rdev"] = OrderedDict([
         ("device_id", 0),
         ("major_id", 0),
         ("minor_id", 0),
     ])
-    st_unix_dict["flags"] = OrderedDict([
+    st_linux_dict["flags"] = OrderedDict([
         (k, False)
         for k in 'UF_NODUMP UF_IMMUTABLE UF_APPEND UF_OPAQUE UF_NOUNLINK'
                  ' UF_COMPRESSED UF_HIDDEN SF_ARCHIVED SF_IMMUTABLE'
                  ' SF_APPEND SF_NOUNLINK SF_SNAPSHOT'.split()
     ])
-    assert stat2dict(st_unix, human_names=True) == st_unix_dict
+    assert stat2dict(st_linux, human_names=True) == st_linux_dict
 
 def test_freebsd():
     st_freebsd_dict = st_dict.copy()
