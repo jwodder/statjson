@@ -122,6 +122,10 @@ st_unix.st_blksize = 4096
 st_unix.st_rdev    = 0
 st_unix.st_flags   = 0
 
+st_freebsd = copy(st)
+st_freebsd.st_gen = 0
+st_freebsd.st_birthtime = 1535380109.4635055
+
 @pytest.fixture(autouse=True)
 def mock_user_and_group(mocker):
     mocker.patch('pwd.getpwuid', return_value=SimpleNamespace(pw_name='a_user'))
@@ -169,3 +173,23 @@ def test_unix_human_names():
                  ' SF_APPEND SF_NOUNLINK SF_SNAPSHOT'.split()
     ])
     assert stat2dict(st_unix, human_names=True) == st_unix_dict
+
+def test_freebsd():
+    st_freebsd_dict = st_dict.copy()
+    st_freebsd_dict["st_gen"] = 0
+    st_freebsd_dict["st_birthtime"] = OrderedDict([
+        ("seconds", 1535380109.4635055),
+        ("iso8601", "2018-08-27T10:28:29.463506-04:00"),
+    ])
+    assert stat2dict(st_freebsd) == st_freebsd_dict
+
+def test_freebsd_human_names():
+    st_freebsd_dict = st_human_dict.copy()
+    st_freebsd_dict["generation"] = 0
+    st_freebsd_dict["creation_time"] = OrderedDict([
+        ("seconds", 1535380109.4635055),
+        ("iso8601", "2018-08-27T10:28:29.463506-04:00"),
+    ])
+    assert stat2dict(st_freebsd, human_names=True) == st_freebsd_dict
+
+# Test stat results with both Linux and FreeBSD fields?
