@@ -1,9 +1,8 @@
 from   collections import OrderedDict
-from   datetime    import datetime
-from   email.utils import localtime
+from   datetime    import datetime, timezone
 
 def iso8601(secs):
-    return localtime(datetime.fromtimestamp(secs)).isoformat()
+    return datetime.fromtimestamp(secs, timezone.utc).astimezone().isoformat()
 
 def about_time(secs, nanosecs=None):
     about = OrderedDict()
