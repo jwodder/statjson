@@ -14,7 +14,7 @@ def identity(x):
 def about_mode(m):
     return OrderedDict([
         ("integer", m),
-        ("octal", '0{0:0o}'.format(m)),
+        ("octal", f'0{m:0o}'),
         ("string", strmode(m)),
         ("bits", OrderedDict(
             (prop, bool(m & getattr(stat, prop)))
